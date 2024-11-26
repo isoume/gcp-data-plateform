@@ -13,9 +13,13 @@ This repository contains the Terraform configurations to set up and manage the f
 1. [Environment Setup](setup.sh)
 2. [Terraform Configuration](main.tf)
 3. [Terraform Commands] command
+- Initialize the environment
 terraform init
+- Validate the code
 terraform validate
+- Plan to visualize the resources that will be created
 terraform plan -var-file=env/dev.tfvars
+- Apply to create resources that you want to provisionned
 terraform apply -var-file=env/dev.tfvars
 
 
