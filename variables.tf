@@ -93,7 +93,7 @@ variable "vm_continoues_delevery_sa_description" {
 }
 
 variable "vm_continues_delevery_sa_roles" {
-  type = set(string)
+  type    = set(string)
   default = ["roles/compute.instanceAdmin.v1", "roles/iap.tunnelResourceAccessor"]
 }
 
@@ -109,7 +109,7 @@ variable "service_account_id" {
 }
 
 variable "tf_access_token" {
-  type = string
+  type        = string
   description = "Access token used for Terraform authentication and API requests."
-  default ="UNKWON"
+  default     = "UNKWON"
 }
