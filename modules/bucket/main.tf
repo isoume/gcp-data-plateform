@@ -12,7 +12,7 @@ resource "google_storage_bucket_iam_member" "gcs_bucket_creators" {
   member = each.value
 }
 
-resource "google_storage_bucket_iam_binding" "scaner_emission_bucket_legacyreaders" {
+resource "google_storage_bucket_iam_binding" "gcs_bucket_legacy_readers" {
 
   bucket  = google_storage_bucket.gcs_bucket.name
   role    = "roles/storage.legacyBucketReader"

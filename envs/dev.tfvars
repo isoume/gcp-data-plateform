@@ -1,3 +1,3 @@
-project = "doctolib-data-dev"
+project = "doctolib-data-rec"
 region  = "EU"
 env     = "dev"

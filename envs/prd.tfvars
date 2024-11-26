@@ -1,3 +1,3 @@
 project = "doctolib-data-prd"
-region  = ""
+region  = "EU"
 env     = "prd"
