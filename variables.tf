@@ -108,13 +108,8 @@ variable "service_account_id" {
   default     = "dataops-provisionning-sa"
 }
 
-variable "sa_data_ops_roles" {
-  description = "The Service Account ID"
-  type = set(string)
-  default = ["roles/cloudsql.admin", "roles/compute.instanceAdmin.v1", "roles/compute.networkAdmin"]
-}
-
 variable "tf_access_token" {
   type = string
   description = "Access token used for Terraform authentication and API requests."
+  default ="UNKWON"
 }

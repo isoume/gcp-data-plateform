@@ -1,17 +1,3 @@
-
-resource "google_service_account" "sa_data_ops" {
-  account_id   = var.service_account_id
-  display_name = "Service Account for VPC Creation"
-}
-
-resource "google_project_iam_member" "vpc_role" {
-  for_each = var.sa_data_ops_roles
-
-  project = var.project
-  role    = each.value
-  member  = "serviceAccount:${google_service_account.sa_data_ops.email}"
-}
-
 resource "google_compute_network" "vpc_doctolib" {
   name                    = "vpc-doclib-${var.env}"
   auto_create_subnetworks = false
