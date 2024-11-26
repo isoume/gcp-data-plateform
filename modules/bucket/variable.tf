@@ -14,7 +14,7 @@ variable "storage_class" {
 }
 
 variable "bucket_creators" {
-  type =  set(string)
+  type = set(string)
 }
 
 variable "bucket_legacy_readers" {

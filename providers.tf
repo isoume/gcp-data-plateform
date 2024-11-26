@@ -1,7 +1,7 @@
 provider "google" {
   project = var.project
   region  = var.region
-  # = var.tf_access_token
+  #access_token = var.tf_access_token
 }
 
 provider "google-beta" {
