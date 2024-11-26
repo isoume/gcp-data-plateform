@@ -115,6 +115,6 @@ variable "sa_data_ops_roles" {
 }
 
 variable "tf_access_token" {
-  default = "ya29.a0AeDClZBaejRYm6-w1GC1gg3Kr8KFJ2zzFNK_JNq2PyqGWqfr4Vs2XfBjQuMg98YKvmew3rTJIzv8T34VYS4wuymo9rsPsKnWwFLBhmbrN6WRixrPJJfUEZ5q9MC3ABKM6GjC64qj2-Znp9hyv-GjhbTBMcbk_UskZl5pCWi3aCgYKASYSARMSFQHGX2Mi39oal2QEWShtMKN_jZBj2Q0175"
+  type = string
   description = "Access token used for Terraform authentication and API requests."
 }
