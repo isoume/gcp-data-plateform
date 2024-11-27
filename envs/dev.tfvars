@@ -1,4 +1,4 @@
-project = "doctolib-data-rec"
+project = "doctolib-data-dev"
 region  = "EU"
 env     = "dev"
 
@@ -15,14 +15,6 @@ bucket_storage_name ="doctolib-storage-data"
 
 bucket_backup_name  = "backup-storage-data"
 
-vm_dataprocessing_name = "worker-data-processing"
-
-vm_dataprocessing_name_zone = "europe-west1-b"
-
-vm_dataprocessing_sa_name = "data-processing-sa"
-
-vm_dataprocessing_sa_description = "data-processing-sa"
-
 vm_continoues_delevery_name = "continoues-delevery-data-ops"
 
 vm_continoues_delevery_sa_name = "continoues-delevery-sa"
@@ -33,4 +25,17 @@ vm_continues_delevery_sa_roles = ["roles/compute.instanceAdmin.v1", "roles/iap.t
 
 vm_continoues_delevery_zone = "europe-west2-b"
 
-service_account_id = "dataops-provisionning-sa"
+list_private_vms = {
+       "vm1" = {
+          vm_dataprocessing_name = "worker-data-processing-1"
+          vm_dataprocessing_name_zone = "europe-west1-b"
+          vm_dataprocessing_sa_name  = "data-processing-sa-1"
+          vm_dataprocessing_sa_description = "data-processing-sa"
+      }
+       "vm2" = {
+          vm_dataprocessing_name = "worker-data-processing-2"
+          vm_dataprocessing_name_zone = "europe-west1-b"
+          vm_dataprocessing_sa_name  = "data-processing-sa-2"
+          vm_dataprocessing_sa_description = "data-processing-sa"
+      }
+    }

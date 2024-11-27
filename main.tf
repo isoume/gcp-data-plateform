@@ -85,13 +85,15 @@ resource "google_project_iam_member" "continuous_delevery_vm_sa_role" {
 
 # Service account for the vm named (data_processing_vm_sa)
 resource "google_service_account" "data_processing_vm_sa" {
-  account_id   = var.vm_dataprocessing_sa_name
-  display_name = var.vm_dataprocessing_sa_description
+  for_each     = var.list_private_vms
+  account_id   = each.value.vm_dataprocessing_sa_name
+  display_name = each.value.vm_dataprocessing_sa_description
 }
 
 # Allow the SA continuous_delevery_vm_sa serviceAccountUser to data_processing_vm_sa for connect
 resource "google_service_account_iam_member" "allow_impersonation_cd_data_processing" {
-  service_account_id = "projects/doctolib-data-dev/serviceAccounts/${google_service_account.data_processing_vm_sa.email}"
+  for_each     = var.list_private_vms
+  service_account_id = "projects/doctolib-data-dev/serviceAccounts/${google_service_account.data_processing_vm_sa[each.key].email}"
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:${google_service_account.continuous_delevery_vm_sa.email}"
 }
@@ -101,8 +103,8 @@ module "storage_data_doctolib" {
   source                = "./modules/bucket"
   name                  = "${var.project}-${var.bucket_storage_name}"
   region                = var.region
-  bucket_creators       = ["serviceAccount:${google_service_account.data_processing_vm_sa.email}"]
-  bucket_legacy_readers = ["serviceAccount:${google_service_account.data_processing_vm_sa.email}"]
+  bucket_creators       = [for sa in google_service_account.data_processing_vm_sa: "serviceAccount:${sa.email}"]
+  bucket_legacy_readers = [for sa in google_service_account.data_processing_vm_sa: "serviceAccount:${sa.email}"]
   storage_class         = "STANDARD"
 }
 
@@ -118,9 +120,10 @@ module "backup_data_doctolib" {
 
 # VM that running in the private subnet
 resource "google_compute_instance" "data_processing_vm" {
-  name         = "${var.vm_dataprocessing_name}-${var.env}"
+  for_each     = var.list_private_vms
+  name         = "${each.value.vm_dataprocessing_name}-${var.env}"
   machine_type = "e2-micro"
-  zone         = var.vm_dataprocessing_name_zone
+  zone         = each.value.vm_dataprocessing_name_zone
   boot_disk {
     initialize_params {
       image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts"
@@ -133,7 +136,7 @@ resource "google_compute_instance" "data_processing_vm" {
   }
 
   service_account {
-    email = google_service_account.data_processing_vm_sa.email
+    email = google_service_account.data_processing_vm_sa[each.key].email
     scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
     ]
@@ -244,7 +247,7 @@ resource "google_service_networking_connection" "private_connection" {
     google_compute_global_address.private_google_access.name
   ]
 }
-
+/*
 # Create the cloud instances
 resource "google_sql_database_instance" "database_doctolib" {
   name             = "dataprocessing-database-${var.env}"
@@ -278,7 +281,9 @@ resource "google_compute_firewall" "allow_private_subnet_traffic" {
 
 # Grant IAM roles to the VM's Service Account
 resource "google_project_iam_member" "sql_client_role" {
+  for_each = var.list_private_vms
   project = var.project
   role    = "roles/cloudsql.client"
-  member  = "serviceAccount:${google_service_account.data_processing_vm_sa.email}"
+  member  = "serviceAccount:${google_service_account.data_processing_vm_sa[each.key].email}"
 }
+*/

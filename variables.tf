@@ -49,7 +49,7 @@ variable "bucket_backup_name" {
   type        = string
   default     = "backup-storage-data"
 }
-
+/*
 variable "vm_dataprocessing_name" {
   description = "Name of the virtual machine used for data processing tasks."
   type        = string
@@ -73,6 +73,7 @@ variable "vm_dataprocessing_sa_description" {
   type        = string
   default     = "data-processing-sa"
 }
+*/
 
 variable "vm_continoues_delevery_name" {
   description = "Name of the virtual machine used for continuous delivery operations."
@@ -103,10 +104,35 @@ variable "vm_continoues_delevery_zone" {
   default     = "europe-west2-b"
 }
 
-variable "service_account_id" {
+variable "nb_private_instances" {
   description = "The Service Account ID"
-  default     = "dataops-provisionning-sa"
+  default     = 2
 }
+
+variable "list_private_vms" {
+  type        = map(object({
+    vm_dataprocessing_name        = string
+    vm_dataprocessing_name_zone = string
+    vm_dataprocessing_sa_name = string
+    vm_dataprocessing_sa_description = string
+  }))
+  default = {
+       "vm1" = {
+          vm_dataprocessing_name = "worker-data-processing-1"
+          vm_dataprocessing_name_zone = "europe-west1-b"
+          vm_dataprocessing_sa_name  = "data-processing-sa-1"
+          vm_dataprocessing_sa_description = "data-processing-sa"
+      }
+       "vm2" = {
+          vm_dataprocessing_name = "worker-data-processing-2"
+          vm_dataprocessing_name_zone = "europe-west1-b"
+          vm_dataprocessing_sa_name  = "data-processing-sa-2"
+          vm_dataprocessing_sa_description = "data-processing-sa"
+      }
+    }
+}
+
+
 
 variable "tf_access_token" {
   type        = string
