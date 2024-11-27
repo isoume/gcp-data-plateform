@@ -247,7 +247,7 @@ resource "google_service_networking_connection" "private_connection" {
     google_compute_global_address.private_google_access.name
   ]
 }
-/*
+
 # Create the cloud instances
 resource "google_sql_database_instance" "database_doctolib" {
   name             = "dataprocessing-database-${var.env}"
@@ -286,4 +286,3 @@ resource "google_project_iam_member" "sql_client_role" {
   role    = "roles/cloudsql.client"
   member  = "serviceAccount:${google_service_account.data_processing_vm_sa[each.key].email}"
 }
-*/
