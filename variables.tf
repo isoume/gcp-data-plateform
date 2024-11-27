@@ -137,5 +137,5 @@ variable "list_private_vms" {
 variable "tf_access_token" {
   type        = string
   description = "Access token used for Terraform authentication and API requests."
-  default     = "UNKWON"
+  default     = "UNKNOW"
 }
