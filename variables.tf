@@ -41,7 +41,7 @@ variable "public_subnet_range_ip_cidr" {
 variable "bucket_storage_name" {
   description = "Name of the storage bucket used for storing primary data."
   type        = string
-  default     = "doctolib-storage-data"
+  default     = "data-storage-data"
 }
 
 variable "bucket_backup_name" {

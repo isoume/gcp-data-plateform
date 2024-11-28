@@ -1,8 +1,9 @@
 #!/bin/bash
 set_acces_token() {
   unset ACCESS_TOKEN
+  SERVICE_ACCOUNT="make the Service Account"
   # Generate GCP Access Token
-  ACCESS_TOKEN=$(gcloud auth print-access-token --impersonate-service-account="iac-provisionning-resources@doctolib-data-dev.iam.gserviceaccount.com")
+  ACCESS_TOKEN=$(gcloud auth print-access-token --impersonate-service-account="${SERVICE_ACCOUNT}")
   # Export the Token as Environment Variable
   export GOOGLE_OAUTH_ACCESS_TOKEN="$ACCESS_TOKEN"
   return 0

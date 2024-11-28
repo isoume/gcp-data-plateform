@@ -1,4 +1,4 @@
-project = "doctolib-data-dev"
+project = "data-data-dev"
 region  = "EU"
 env     = "dev"
 
@@ -11,7 +11,7 @@ public_subnet_region = "europe-west2"
 
 public_subnet_range_ip_cidr = "10.10.2.0/24"
 
-bucket_storage_name ="doctolib-storage-data"
+bucket_storage_name ="data-storage-data"
 
 bucket_backup_name  = "backup-storage-data"
 

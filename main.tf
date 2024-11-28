@@ -1,4 +1,4 @@
-resource "google_compute_network" "vpc_doctolib" {
+resource "google_compute_network" "vpc_data" {
   name                    = "vpc-doclib-${var.env}"
   auto_create_subnetworks = false
 }
@@ -7,7 +7,7 @@ resource "google_compute_subnetwork" "private_subnet" {
   name                     = "subnet-private-${var.env}"
   ip_cidr_range            = var.private_subnet_range_ip_cidr
   region                   = var.private_subnet_region
-  network                  = google_compute_network.vpc_doctolib.id
+  network                  = google_compute_network.vpc_data.id
   private_ip_google_access = true
 }
 
@@ -15,7 +15,7 @@ resource "google_compute_subnetwork" "public_subnet" {
   name                     = "subnet-public-${var.env}"
   ip_cidr_range            = var.public_subnet_range_ip_cidr
   region                   = var.public_subnet_region
-  network                  = google_compute_network.vpc_doctolib.id
+  network                  = google_compute_network.vpc_data.id
   private_ip_google_access = true
 }
 
@@ -23,7 +23,7 @@ resource "google_compute_subnetwork" "public_subnet" {
 resource "google_compute_router" "my_router" {
   name    = "my-router"
   region  = google_compute_subnetwork.private_subnet.region
-  network = google_compute_network.vpc_doctolib.id
+  network = google_compute_network.vpc_data.id
 
   bgp {
     asn = 64514
@@ -42,7 +42,7 @@ resource "google_compute_router_nat" "my_nat" {
 # Allow SSH connection for the vm to test connectivity
 resource "google_compute_firewall" "allow_ssh" {
   name    = "allow-ssh"
-  network = google_compute_network.vpc_doctolib.id
+  network = google_compute_network.vpc_data.id
 
   allow {
     protocol = "tcp"
@@ -57,7 +57,7 @@ resource "google_compute_firewall" "allow_ssh" {
 # Open port for looking upgrade, ...
 resource "google_compute_firewall" "allow_all_egress" {
   name    = "allow-all-egress"
-  network = google_compute_network.vpc_doctolib.id
+  network = google_compute_network.vpc_data.id
 
   direction = "EGRESS"
 
@@ -93,13 +93,13 @@ resource "google_service_account" "data_processing_vm_sa" {
 # Allow the SA continuous_delevery_vm_sa serviceAccountUser to data_processing_vm_sa for connect
 resource "google_service_account_iam_member" "allow_impersonation_cd_data_processing" {
   for_each     = var.list_private_vms
-  service_account_id = "projects/doctolib-data-dev/serviceAccounts/${google_service_account.data_processing_vm_sa[each.key].email}"
+  service_account_id = "projects/data-data-dev/serviceAccounts/${google_service_account.data_processing_vm_sa[each.key].email}"
   role               = "roles/iam.serviceAccountUser"
   member             = "serviceAccount:${google_service_account.continuous_delevery_vm_sa.email}"
 }
 
 # Storage bucket for input data
-module "storage_data_doctolib" {
+module "storage_data_data" {
   source                = "./modules/bucket"
   name                  = "${var.project}-${var.bucket_storage_name}"
   region                = var.region
@@ -109,7 +109,7 @@ module "storage_data_doctolib" {
 }
 
 # Storage bucket for ARCHIVE
-module "backup_data_doctolib" {
+module "backup_data_data" {
   source                = "./modules/bucket"
   name                  = "${var.project}-${var.bucket_backup_name}"
   region                = var.region
@@ -130,7 +130,7 @@ resource "google_compute_instance" "data_processing_vm" {
     }
   }
   network_interface {
-    network    = google_compute_network.vpc_doctolib.id
+    network    = google_compute_network.vpc_data.id
     subnetwork = google_compute_subnetwork.private_subnet.id
 
   }
@@ -166,7 +166,7 @@ resource "google_compute_instance" "data_processing_vm" {
 resource "google_compute_firewall" "jenkins-allow-http" {
 
   name    = "jenkins-allow-http"
-  network = google_compute_network.vpc_doctolib.id
+  network = google_compute_network.vpc_data.id
 
   allow {
     protocol = "tcp"
@@ -190,7 +190,7 @@ resource "google_compute_instance" "continuous_delevery_vm" {
   }
   allow_stopping_for_update = true
   network_interface {
-    network    = google_compute_network.vpc_doctolib.id
+    network    = google_compute_network.vpc_data.id
     subnetwork = google_compute_subnetwork.public_subnet.id
     # Attach a public network ip address
     access_config {
@@ -236,12 +236,12 @@ resource "google_compute_global_address" "private_google_access" {
   purpose       = "VPC_PEERING"
   address_type  = "INTERNAL"
   prefix_length = 16
-  network       = google_compute_network.vpc_doctolib.id
+  network       = google_compute_network.vpc_data.id
 }
 
 # Assume the private connection with the peering
 resource "google_service_networking_connection" "private_connection" {
-  network = google_compute_network.vpc_doctolib.id
+  network = google_compute_network.vpc_data.id
   service = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [
     google_compute_global_address.private_google_access.name
@@ -249,7 +249,7 @@ resource "google_service_networking_connection" "private_connection" {
 }
 
 # Create the cloud instances
-resource "google_sql_database_instance" "database_doctolib" {
+resource "google_sql_database_instance" "database_data" {
   name             = "dataprocessing-database-${var.env}"
   region           = var.private_subnet_region
   database_version = "MYSQL_8_0"
@@ -258,7 +258,7 @@ resource "google_sql_database_instance" "database_doctolib" {
   settings {
     tier = "db-f1-micro"
     ip_configuration {
-      private_network = google_compute_network.vpc_doctolib.id
+      private_network = google_compute_network.vpc_data.id
       ipv4_enabled    = false
     }
   }
@@ -268,7 +268,7 @@ resource "google_sql_database_instance" "database_doctolib" {
 # Open traffic in the port of cloud sql m(mysql) 3306
 resource "google_compute_firewall" "allow_private_subnet_traffic" {
   name    = "allow-private-subnet-traffic"
-  network = google_compute_network.vpc_doctolib.id
+  network = google_compute_network.vpc_data.id
 
   allow {
     protocol = "tcp"
